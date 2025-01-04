@@ -1,0 +1,22 @@
+{
+  "name": "melody",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "github:discordjs/opus",
+    "@discordjs/voice": "^0.17.0",
+    "@distube/file": "^1.0.1",
+    "@distube/youtube": "^1.0.2",
+    "@distube/ytdl-core": "^4.13.7",
+    "discord.js": "^14.15.3",
+    "distube": "^5.0.4",
+    "sodium-native": "^4.1.1"
+  }
+}
