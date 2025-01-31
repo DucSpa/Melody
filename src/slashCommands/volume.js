@@ -4,7 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("volume")
         .setDescription("Set the bot volume to your liking!")
-        .addStringOption((option) =>
+        .addIntegerOption((option) =>
             option
                 .setName("volume")
                 .setDescription("lmao lmao lmao")

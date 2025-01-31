@@ -11,12 +11,6 @@ module.exports = {
 				.setName("song")
 				.setDescription("Write the URL or name of the song to play! :3")
 				.setRequired(true),
-		)
-		.addAttachmentOption((option) =>
-			option
-				.setName("file")
-				.setDescription("Send a file to play!")
-				.setRequired(false)
 		),
 	async execute(interaction) {
 		const song = interaction.options.getString("song");

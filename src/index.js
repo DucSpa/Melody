@@ -4,8 +4,6 @@ const path = require("node:path");
 const { token } = require("./config.json");
 const { DisTube } = require("distube");
 const { YouTubePlugin } = require("@distube/youtube");
-const { FilePlugin } = require("@distube/file")
-const { isVoiceChannelEmpty } = require ("distube");
 
 // Create a new client instance
 const client = new Client({
@@ -16,7 +14,7 @@ const client = new Client({
 });
 
 client.distube = new DisTube(client, {
-	plugins: [new YouTubePlugin(), new FilePlugin()],
+	plugins: [new YouTubePlugin()],
 });
 
 // Create a new collection to store the commands
