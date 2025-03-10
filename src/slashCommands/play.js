@@ -33,13 +33,13 @@ module.exports = {
 
 		try {
 			await interaction.deferReply(); // Defer reply to handle potential long response times
-			
+
 			// Include textChannel in the options
 			await client.distube.play(voiceChannel, song, {
 				textChannel: interaction.channel,
 				member: member,
 			});
-			
+
 			const queue = client.distube.getQueue(voiceChannel).songs;
 			let lastQueueSong = queue.length - 1;
 
@@ -54,7 +54,7 @@ module.exports = {
 						})
 						.setFooter({ text: `Duracion: ${queue[0].formattedDuration}`, iconURL: userImage })
 						.setTimestamp()
-						.setColor("#b2a89e"),
+						.setColor("#fdc2a2"),
 				],
 			});
 		} catch (error) {

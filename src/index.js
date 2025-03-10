@@ -9,6 +9,7 @@ const { YouTubePlugin } = require("@distube/youtube");
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds, // Needed to get events from the commands
+		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.GuildVoiceStates, // Needed to join voice channels
 	],
 });
