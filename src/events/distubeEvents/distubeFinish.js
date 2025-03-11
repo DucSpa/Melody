@@ -32,7 +32,7 @@ module.exports = (distube) => {
                 }
             }
             idleTimers.delete(guildId);
-        }, 60000); // leave after 1 minute
+        }, 180000); // leave after 3 minutes
 
         idleTimers.set(guildId, timer);
     });
