@@ -1,4 +1,3 @@
-// download.js
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const ytdl = require("@distube/ytdl-core");
 const { getInfo } = require("@distube/ytdl-core");

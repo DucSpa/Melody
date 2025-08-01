@@ -82,7 +82,7 @@ client.distube.on('finish', queue => {
 			client.distube.voices.leave(voiceChannel);
 			queue.textChannel.send("I have left the voice channel because I was idle for too long! :wave:");
 		}
-	}, 600);
+	}, 60000);
 });
 
 client.distube.on('playSong', (queue, song) => {
@@ -100,4 +100,3 @@ client.login(token);
 client.once(Events.ClientReady, (readyClient) => {
 	console.log(`✅ Logged in as ${readyClient.user.tag} :D!`);
 });
-
