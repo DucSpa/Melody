@@ -22,18 +22,18 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription("Please provide a valid song link or name.")
-                        .setColor("#b2a89e"),
+                        .setColor("#fdc2a2"),
                 ],
                 ephemeral: true,
             });
         }
 
-        if(!ytdl.validateID(songLink)) {
+        if(!ytdl.validateURL(songLink)) {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription("Please provide a valid YouTube link.")
-                        .setColor("#b2a89e"),
+                        .setColor("#fdc2a2"),
                 ],
                 ephemeral: true,
             });
@@ -60,7 +60,7 @@ module.exports = {
                         .setDescription(`**[${songTitle}](${songUrl})** \n has been downloaded!`)
                         .setThumbnail(songThumbnail)
                         .setFooter({ text: `Requested by ${user.username}`, iconURL: userImage })
-                        .setColor("#b2a89e"),
+                        .setColor("#fdc2a2"),
                 ],
                 files: [{
                     attachment: fileBuffer,
