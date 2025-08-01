@@ -24,7 +24,7 @@ module.exports = {
 			await interaction.reply({
 				embeds: [
 					new EmbedBuilder()
-						.setDescription(`:x: **Debes de estar en un  canal de voz para usar este comando!**`)
+						.setDescription(`:x: **Debes de estar en un canal de voz para usar este comando!**`)
 						.setColor("#fdc2a2"),
 				],
 			});
@@ -33,9 +33,15 @@ module.exports = {
 
 		try {
 			await interaction.deferReply(); // Defer reply to handle potential long response times
-			await client.distube.play(voiceChannel, song)
+
+			// Include textChannel in the options
+			await client.distube.play(voiceChannel, song, {
+				textChannel: interaction.channel,
+				member: member,
+			});
+
 			const queue = client.distube.getQueue(voiceChannel).songs;
-			let lastQueueSong = queue.length - 1
+			let lastQueueSong = queue.length - 1;
 
 			await interaction.editReply({
 				embeds: [
@@ -48,7 +54,7 @@ module.exports = {
 						})
 						.setFooter({ text: `Duracion: ${queue[0].formattedDuration}`, iconURL: userImage })
 						.setTimestamp()
-						.setColor("#b2a89e"),
+						.setColor("#fdc2a2"),
 				],
 			});
 		} catch (error) {
