@@ -5,7 +5,7 @@ module.exports = {
         .setName("nightcore")
         .setDescription("Add nightcore to the current song!"),
     async execute(interaction) {
-        const { member, client } = interaction;
+        const { member } = interaction;
         const voiceChannel = member.voice.channel;
         let queue = interaction.client.distube.getQueue(interaction.guildId);
 

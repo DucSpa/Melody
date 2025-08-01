@@ -4,8 +4,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("leave")
         .setDescription("Tell the bot to leave the voice channel!")
-        .setIntegrationTypes(0, 1)
-        .setContexts(0, 1, 2),
+        .setIntegrationTypes(0)
+        .setContexts(0),
     async execute(interaction) {
     const { member, client } = interaction;
     const voiceChannel = member.voice.channel;

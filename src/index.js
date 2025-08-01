@@ -72,17 +72,29 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	}
 });
 
+let leaveTimeout = null;
+
+client.distube.on('finish', queue => {
+	// Set timeout to leave after 1 minute (60000 milliseconds)
+	leaveTimeout = setTimeout(() => {
+		const voiceChannel = queue.voiceChannel;
+		if (voiceChannel) {
+			client.distube.voices.leave(voiceChannel);
+			queue.textChannel.send("I have left the voice channel because I was idle for too long! :wave:");
+		}
+	}, 600);
+});
+
+client.distube.on('playSong', (queue, song) => {
+	// Clear the leave timeout if a new song starts playing
+	if (leaveTimeout) {
+		clearTimeout(leaveTimeout);
+		leaveTimeout = null;
+	}
+});
+
 // Log in to Discord with the token
 client.login(token);
-
-//leave channel when empty
-/*client.on("voiceStateUpdate", oldState => {
-  if (!oldState?.channel) return;
-  const voice = this.voices.get(oldState);
-  if (voice && isVoiceChannelEmpty(oldState)) {
-    voice.leave();
-  }
-});*/
 
 // When the client is logged in it will log the following message
 client.once(Events.ClientReady, (readyClient) => {
