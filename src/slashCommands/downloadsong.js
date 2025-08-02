@@ -9,6 +9,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("download")
         .setDescription("Provides a link to download the song you want!")
+        .setIntegrationTypes(0, 1)
+        .setContexts(0, 1, 2)
         .addStringOption(option =>
             option
                 .setName("link")
