@@ -50,17 +50,15 @@ module.exports = {
             // Fetch video info and source stream
             const songInfo = await getInfo(songLink);
             const sourceStream = ytdl.downloadFromInfo(songInfo, {
-                filter: "audioonly",
-                quality: "highestaudio",
+                filter: "videoandaudio",
+                quality: "lowestvideo",
             });
 
             // Transcode to MP3 via FFmpeg
             const mp3Stream = ffmpeg(sourceStream)
                 .format("mp3")
                 .audioBitrate(192)
-                .on("error", err => {
-                    console.error("FFmpeg error:", err);
-                })
+                .on("error", err => {console.error("FFmpeg error:", err);})
                 .pipe();
 
             // Collect MP3 data
