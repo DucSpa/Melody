@@ -26,8 +26,8 @@ module.exports = {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription("Please provide a valid song link.")
-                        .setColor("#fdc2a2"),
+                        .setDescription(":x: Please provide a valid song link.")
+                        .setColor("#fda2a2"),
                 ],
                 ephemeral: true,
             });
@@ -37,8 +37,8 @@ module.exports = {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription("Please provide a valid YouTube link.")
-                        .setColor("#fdc2a2"),
+                        .setDescription(":x: Please provide a valid YouTube link.")
+                        .setColor("#fda2a2"),
                 ],
                 ephemeral: true,
             });
@@ -72,15 +72,13 @@ module.exports = {
             const songTitle = songInfo.videoDetails.title;
             const songUrl = songInfo.videoDetails.video_url;
             const songThumbnail = songInfo.videoDetails.thumbnails[0].url;
-            const user = interaction.user;
-
+            
             // Send the MP3 file
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`**[${songTitle}](${songUrl})** has been downloaded!`)
+                        .setDescription(`**:inbox_tray:[${songTitle}](${songUrl})** has been downloaded!`)
                         .setThumbnail(songThumbnail)
-                        .setFooter({ text: `Requested by ${user.username}`, iconURL: user.displayAvatarURL() })
                         .setColor("#fdc2a2"),
                 ],
                 files: [
@@ -94,9 +92,17 @@ module.exports = {
         } catch (error) {
             console.error(error);
             if (interaction.replied || interaction.deferred) {
-                await interaction.followUp({ content: "There was an error trying to download the song.", ephemeral: true });
+                await interaction.followUp({ embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`:x: There was an error trying to download the song.`)
+                        .setColor("#fda2a2"),
+                ]});
             } else {
-                await interaction.reply({ content: "There was an error trying to download the song.", ephemeral: true });
+                await interaction.reply({ embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`:x: There was an error trying to download the song.`)
+                        .setColor("#fda2a2"),
+                ]});
             }
         }
     },
