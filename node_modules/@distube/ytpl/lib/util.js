@@ -1,6 +1,6 @@
 const { request } = require('undici');
 
-const DEFAULT_OPTIONS = { limit: Infinity };
+const DEFAULT_OPTIONS = { limit: Number.POSITIVE_INFINITY };
 const DEFAULT_QUERY = { gl: 'US', hl: 'en' };
 const DEFAULT_CONTEXT = {
   client: {
@@ -21,7 +21,7 @@ const tryParseBetween = (body, left, right, addEndCurly = false) => {
     if (!data) return null;
     if (addEndCurly) data += '}';
     return JSON.parse(data);
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };
@@ -32,9 +32,9 @@ exports.parseBody = (body, options = {}) => {
     tryParseBetween(body, 'window["ytInitialData"] = ', '};', true) ||
     tryParseBetween(body, 'var ytInitialData = ', ';</script>') ||
     tryParseBetween(body, 'window["ytInitialData"] = ', ';</script>');
-  const apiKey = between(body, 'INNERTUBE_API_KEY":"', '"') ||
-    between(body, 'innertubeApiKey":"', '"');
-  const clientVersion = between(body, 'INNERTUBE_CONTEXT_CLIENT_VERSION":"', '"') ||
+  const apiKey = between(body, 'INNERTUBE_API_KEY":"', '"') || between(body, 'innertubeApiKey":"', '"');
+  const clientVersion =
+    between(body, 'INNERTUBE_CONTEXT_CLIENT_VERSION":"', '"') ||
     between(body, 'innertube_context_client_version":"', '"');
   // Make deep copy and set clientVersion
   const context = JSON.parse(JSON.stringify(DEFAULT_CONTEXT));
@@ -48,20 +48,21 @@ exports.parseBody = (body, options = {}) => {
 };
 
 // Parsing utility
-const parseText = exports.parseText = txt => {
+const parseText = (txt) => {
   if (txt.simpleText) return txt.simpleText;
-  if (txt.runs) return txt.runs.map(a => a.text).join('');
+  if (txt.runs) return txt.runs.map((a) => a.text).join('');
   return '';
 };
+exports.parseText = parseText;
 
-exports.parseNumFromText = txt => Number(parseText(txt).replace(/\D+/g, ''));
+exports.parseNumFromText = (txt) => Number(parseText(txt).replace(/\D+/g, ''));
 
 // Request Utility
 exports.doPost = (url, opts, payload) => {
-  if (!opts) opts = {};
+  const options = opts || {};
   // Enforce POST-Request
-  const reqOpts = Object.assign({}, opts, { method: 'POST', body: JSON.stringify(payload) });
-  return request(url, reqOpts).then(r => r.body.json());
+  const reqOpts = Object.assign({}, options, { method: 'POST', body: JSON.stringify(payload) });
+  return request(url, reqOpts).then((r) => r.body.json());
 };
 
 // Guarantee that all arguments are valid
@@ -74,25 +75,28 @@ exports.checkArgs = (plistId, options = {}) => {
     throw new Error('playlist ID must be of type string');
   }
 
-
   // Normalisation
-  let obj = Object.assign({}, DEFAULT_OPTIONS, options);
+  const obj = Object.assign({}, DEFAULT_OPTIONS, options);
   // Other optional params
-  if (isNaN(obj.limit) || obj.limit <= 0) obj.limit = DEFAULT_OPTIONS.limit;
+  if (Number.isNaN(obj.limit) || obj.limit <= 0) obj.limit = DEFAULT_OPTIONS.limit;
   // Set required parameter: query
   obj.query = Object.assign({}, DEFAULT_QUERY, obj.query, { list: plistId });
-  if (options && options.gl) obj.query.gl = options.gl;
-  if (options && options.hl) obj.query.hl = options.hl;
+  if (options?.gl) obj.query.gl = options.gl;
+  if (options?.hl) obj.query.hl = options.hl;
   // Default requestOptions
-  if (!options.requestOptions) options.requestOptions = {};
+  const requestOptions = options.requestOptions || {};
   // Unlink requestOptions
-  obj.requestOptions = Object.assign({}, options.requestOptions);
+  obj.requestOptions = Object.assign({}, requestOptions);
   // Unlink requestOptions#headers
   obj.requestOptions.headers = obj.requestOptions.headers ? JSON.parse(JSON.stringify(obj.requestOptions.headers)) : {};
 
   if (!getPropInsensitive(obj.requestOptions.headers, 'user-agent')) {
-    setPropInsensitive(obj.requestOptions.headers, 'user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
-      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36');
+    setPropInsensitive(
+      obj.requestOptions.headers,
+      'user-agent',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+        'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36'
+    );
   }
 
   const cookie = getPropInsensitive(obj.requestOptions.headers, 'cookie');
@@ -113,26 +117,32 @@ exports.checkArgs = (plistId, options = {}) => {
  * @param {string} right right
  * @returns {string}
  */
-const between = exports.between = (haystack, left, right) => {
+const between = (haystack, left, right) => {
   let pos;
   if (left instanceof RegExp) {
     const match = haystack.match(left);
-    if (!match) { return ''; }
+    if (!match) {
+      return '';
+    }
     pos = match.index + match[0].length;
   } else {
     pos = haystack.indexOf(left);
-    if (pos === -1) { return ''; }
+    if (pos === -1) {
+      return '';
+    }
     pos += left.length;
   }
-  haystack = haystack.slice(pos);
-  pos = haystack.indexOf(right);
-  if (pos === -1) { return ''; }
-  haystack = haystack.slice(0, pos);
-  return haystack;
+  const result = haystack.slice(pos);
+  const endPos = result.indexOf(right);
+  if (endPos === -1) {
+    return '';
+  }
+  return result.slice(0, endPos);
 };
+exports.between = between;
 
 const findPropKeyInsensitive = (obj, prop) =>
-  Object.keys(obj).find(p => p.toLowerCase() === prop.toLowerCase()) || null;
+  Object.keys(obj).find((p) => p.toLowerCase() === prop.toLowerCase()) || null;
 
 const getPropInsensitive = (obj, prop) => {
   const key = findPropKeyInsensitive(obj, prop);

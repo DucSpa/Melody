@@ -1,0 +1,42 @@
+diff --git a/node_modules/@distube/yt-dlp/dist/index.js b/node_modules/@distube/yt-dlp/dist/index.js
+index b17b126..86664a6 100644
+--- a/node_modules/@distube/yt-dlp/dist/index.js
++++ b/node_modules/@distube/yt-dlp/dist/index.js
+@@ -73,16 +73,28 @@ var args = /* @__PURE__ */ __name((url, flags = {}) => [url].concat((0, import_d
+ var json = /* @__PURE__ */ __name((url, flags, options) => {
+   const process2 = (0, import_node_child_process.spawn)(YTDLP_PATH, args(url, flags), options);
+   return new Promise((resolve, reject) => {
+-    let output = "";
+-    process2.stdout?.on("data", (chunk) => {
+-      output += chunk;
+-    });
+-    process2.stderr?.on("data", (chunk) => {
+-      output += chunk;
+-    });
++    let stdout = "";
++    let stderr = "";
++    process2.stdout?.on("data", (chunk) => (stdout += chunk));
++    process2.stderr?.on("data", (chunk) => (stderr += chunk));
+     process2.on("close", (code) => {
+-      if (code === 0) resolve(JSON.parse(output));
+-      else reject(new Error(output));
++      if (code !== 0) return reject(new Error(stderr || stdout));
++
++      const primary = String(stdout).trim();
++      try {
++        return resolve(JSON.parse(primary));
++      } catch (e) {
++        const combined = String(stdout + "\n" + stderr).trim();
++        let start = combined.indexOf("{");
++        const alt = combined.indexOf("[");
++        if (start === -1 || (alt !== -1 && alt < start)) start = alt;
++        if (start !== -1) {
++          try {
++            return resolve(JSON.parse(combined.slice(start)));
++          } catch {}
++        }
++        return reject(e);
++      }
+     });
+     process2.on("error", reject);
+   });

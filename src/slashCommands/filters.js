@@ -15,7 +15,7 @@ module.exports = {
                         new EmbedBuilder()
                             .setDescription(`nightcore`)
                             .setColor("#fdc2a2")
-                            .setImage('https://media1.tenor.com/m/BbP7W860_cwAAAAd/lezard-dance-super-speed.gif')
+                            .setImage('https://c.tenor.com/es-dWz_Xy8AAAAAd/tenor.gif')
                     ]
                 }
             );

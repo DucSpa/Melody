@@ -1,3 +1,4 @@
+const ytdl = require("@distube/ytdl-core");
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
@@ -33,7 +34,7 @@ module.exports = {
 
 		try {
 			await interaction.deferReply(); // Defer reply to handle potential long response times
-
+			
 			// Include textChannel in the options
 			await client.distube.play(voiceChannel, song, {
 				textChannel: interaction.channel,
